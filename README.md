@@ -48,7 +48,7 @@ Pastikan perangkat Anda telah memenuhi persyaratan berikut:
 Clone repository :
 
 ```bash
-git clone https://github.com/atifaazzahirah/SistemKeuanganBsuHidayahGeneva.git
+git clone https://github.com/elvaruhustina/Project_RPLO.git
 ```
 ```
 ```
