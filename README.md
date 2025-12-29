@@ -48,7 +48,7 @@ Pastikan perangkat Anda telah memenuhi persyaratan berikut:
 Clone repository :
 
 ```bash
-git clone https://github.com/atifaazzahirah/SistemKeuanganBsuHidayahGeneva.git
+git clone https://github.com/elvaruhustina/Project_RPLO.git
 ```
 ```
 ```
@@ -83,7 +83,7 @@ php artisan key:generate
 Database **tidak disertakan langsung di repository**. Silakan unduh file database melalui Google Drive pada tautan berikut:
 
 > **Link Google Drive Database:**
-> https://drive.google.com/drive/folders/1B6xJVdGChH4vkuaZ0d4mrNcFL73Ots7C?usp=drive_link 
+> https://drive.google.com/drive/folders/13toxQ-uS0SSUu3U2bK84Vb7cbTXgRyEf?usp=sharing
 
 ---
 
