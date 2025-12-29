@@ -19,15 +19,32 @@
     @csrf
 
     <div class="mb-3">
+        <label for="kategori_id" class="form-label">
+            Kategori Sampah <span class="text-danger">*</span>
+        </label>
+        <select name="kategori_id" id="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" required>
+            <option value="">-- Pilih Kategori --</option>
+            @foreach($kategori as $k)
+                <option value="{{ $k->id }}" {{ old('kategori_id') == $k->id ? 'selected' : '' }}>
+                    {{ $k->nama_kategori }}
+                </option>
+            @endforeach
+        </select>
+        @error('kategori_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3">
         <label for="jenis_sampah" class="form-label">
-            Jenis Sampah <span class="text-danger">*</span>
+            Nama Jenis Sampah <span class="text-danger">*</span>
         </label>
         <input type="text"
                name="jenis_sampah"
                id="jenis_sampah"
                class="form-control @error('jenis_sampah') is-invalid @enderror"
                value="{{ old('jenis_sampah') }}"
-               placeholder="Contoh: Plastik, Kertas, Logam"
+               placeholder="Contoh: Botol Plastik, Besi Tua, Koran"
                required>
     </div>
 
@@ -35,16 +52,20 @@
         <label for="harga_kg" class="form-label">
             Harga per Kg <span class="text-danger">*</span>
         </label>
-        <input type="number"
-               step="0.01"
-               min="0"
-               name="harga_kg"
-               id="harga_kg"
-               class="form-control @error('harga_kg') is-invalid @enderror"
-               value="{{ old('harga_kg') }}"
-               placeholder="Contoh: 2500"
-               required>
-</div>
+        <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="number"
+                   step="0.01"
+                   min="0"
+                   name="harga_kg"
+                   id="harga_kg"
+                   class="form-control @error('harga_kg') is-invalid @enderror"
+                   value="{{ old('harga_kg') }}"
+                   placeholder="Contoh: 2500"
+                   required>
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary">Simpan</button>
     <a href="{{ route('jenissampah.index') }}" class="btn btn-secondary">Batal</a>
 </form>
