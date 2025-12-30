@@ -3,34 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\JenisSampah;
-use App\Models\KategoriSampah; // Tambahkan import Model Kategori
+use App\Models\KategoriSampah; 
 use App\Models\Setoran;
 use App\Models\Nasabah;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Digunakan untuk database transaction
+use Illuminate\Support\Facades\DB;
 
 class JenisSampahController extends Controller
 {
     public function index()
     {
-        // Menggunakan eager loading 'kategori' agar performa lebih cepat saat menampilkan data
+        // Eager loading kategori untuk optimasi query
         $jenis_sampah = JenisSampah::with('kategori')->get();
         return view('jenissampah.index', compact('jenis_sampah'));
     }
 
     public function create()
     {
-        // Mengambil semua data kategori untuk dikirim ke dropdown di View
         $kategori = KategoriSampah::all();
         return view('jenissampah.create', compact('kategori'));
     }
 
     public function store(Request $request)
     {
+        // Validasi rigor: Menolak angka dan simbol pada jenis_sampah
         $validated = $request->validate([
-            'kategori_id'  => 'required|exists:kategori_sampah,id', // Validasi relasi kategori
-            'jenis_sampah' => 'required|string|max:255|unique:jenis_sampah,Jenis_Sampah',
+            'kategori_id'  => 'required|exists:kategori_sampah,id',
+            'jenis_sampah' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:jenis_sampah,Jenis_Sampah',
+                'regex:/^[a-zA-Z\s]+$/' // Hanya huruf dan spasi
+            ],
             'harga_kg'     => 'required|numeric|min:0',
+        ], [
+            // Pesan error kustom agar lebih user-friendly
+            'jenis_sampah.regex' => 'Nama jenis sampah hanya boleh berisi huruf (tidak boleh angka atau simbol).',
+            'jenis_sampah.unique' => 'Nama jenis sampah ini sudah terdaftar.',
         ]);
 
         JenisSampah::create([
@@ -53,7 +63,7 @@ class JenisSampahController extends Controller
     public function edit($id)
     {
         $jenis_sampah = JenisSampah::findOrFail($id);
-        $kategori = KategoriSampah::all(); // Kirim data kategori untuk dropdown edit
+        $kategori = KategoriSampah::all(); 
         return view('jenissampah.edit', compact('jenis_sampah', 'kategori'));
     }
 
@@ -61,13 +71,23 @@ class JenisSampahController extends Controller
     {
         $jenisSampah = JenisSampah::findOrFail($id);
 
+        // Validasi update dengan regex yang sama
         $validated = $request->validate([
             'kategori_id'  => 'sometimes|required|exists:kategori_sampah,id',
-            'jenis_sampah' => 'sometimes|required|string|max:255|unique:jenis_sampah,jenis_sampah,' . $id . ',ID_Jenis',
+            'jenis_sampah' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+                'unique:jenis_sampah,jenis_sampah,' . $id . ',ID_Jenis',
+                'regex:/^[a-zA-Z\s]+$/'
+            ],
             'harga_kg'     => 'sometimes|required|numeric|min:0',
+        ], [
+            'jenis_sampah.regex' => 'Nama jenis sampah hanya boleh berisi huruf.',
         ]);
 
-        // Gunakan Database Transaction untuk menjaga integritas data saldo
+        // Menggunakan Database Transaction untuk integritas saldo nasabah
         DB::transaction(function () use ($request, $jenisSampah, $validated) {
             
             // Logika Update Saldo Nasabah jika Harga berubah
@@ -82,10 +102,10 @@ class JenisSampahController extends Controller
                     $newTotal = $s->total_berat * $newHarga;
                     $selisih  = $newTotal - $oldTotal;
 
-                    // Update Saldo Nasabah
+                    // Update Saldo Nasabah secara otomatis
                     Nasabah::where('ID_Nasabah', $s->Id_nasabah)->increment('Total_Saldo', $selisih);
                     
-                    // Update Total Harga di baris Setoran
+                    // Sinkronisasi total harga di tabel setoran
                     $s->update(['total_harga' => $newTotal]);
                 }
             }
@@ -105,7 +125,7 @@ class JenisSampahController extends Controller
             $setoranTerkait = Setoran::where('id_jenis', $jenisSampah->ID_Jenis)->get();
 
             foreach ($setoranTerkait as $s) {
-                // Kurangi saldo nasabah sebelum setoran dihapus
+                // Kurangi saldo nasabah sebelum data dihapus untuk akurasi keuangan
                 Nasabah::where('ID_Nasabah', $s->Id_nasabah)->decrement('Total_Saldo', $s->total_harga);
                 $s->delete();
             }
