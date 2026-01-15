@@ -4,8 +4,8 @@
     left: 0;
     height: 100%;
     width: 250px;
-    background: #A6ABC8;
-    color: white;
+    background: #A6ABC8 !important;
+    color: white !important;
     padding-top: 20px;
     z-index: 100;
 }

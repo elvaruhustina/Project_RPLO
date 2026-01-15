@@ -13,13 +13,13 @@
         .sidebar { 
             width: 260px; 
             min-height: 100vh; 
-            background: #2c3e50; 
+            background: #A6ABC8 ; 
             color: white; 
             flex-shrink: 0; 
             position: fixed;
         }
         .sidebar .nav-link { color: rgba(255,255,255,0.8); margin: 5px 15px; border-radius: 5px; }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #34495e; color: white; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.2) ; color: white; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; background: #f8f9fa; }
     </style>
@@ -29,8 +29,7 @@
 <div class="wrapper">
     <div class="sidebar shadow">
         <div class="sidebar-header text-center">
-            <h5 class="fw-bold">BSU Geneva</h5>
-            <small class="text-info">Admin Panel</small>
+            <h5 class="fw-bold">Sistem Pencatatan dan Pelaporan Keuangan</h5>
         </div>
         <ul class="nav flex-column mt-3">
             <li class="nav-item">
@@ -75,7 +74,7 @@
     <div class="main-content">
         <nav class="navbar navbar-expand navbar-light bg-white shadow-sm mb-4 px-4 py-3">
             <div class="container-fluid">
-                <span class="navbar-text fw-bold">Sistem Keuangan Bank Sampah Hidayah Geneva</span>
+                <span class="navbar-text fw-bold">Bank Sampah Hidayah Geneva</span>
                 <div class="dropdown">
                     <a class="dropdown-toggle text-decoration-none text-dark" data-bs-toggle="dropdown" href="#">
                         <i class="fas fa-user-circle fa-lg me-1"></i> {{ auth()->user()->name }}
